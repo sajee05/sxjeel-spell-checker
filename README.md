@@ -2,6 +2,41 @@
 
 ![Example Preview](https://raw.githubusercontent.com/sajee05/sxjeel-spell-checker/main/example.png)
 
+## FAQ
+
+### 1. Does it support languages other than English?
+
+**Yes.** Any Hunspell-compatible dictionary (`.dic` + `.aff`) is supported, allowing spell checking in virtually **any language**.
+
+---
+
+### 2. Does it support medical or specialized dictionaries?
+
+**Yes.** In addition to standard language dictionaries, you can use specialized dictionaries for fields such as medicine, law, science, engineering, and more, as long as they are provided in Hunspell format (`.dic` + `.aff`).
+
+---
+
+### 3. Where can I download dictionaries?
+
+You can download Hunspell dictionaries from:
+
+* https://github.com/wooorm/dictionaries/tree/main/dictionaries
+* Any other source that provides `.dic` and `.aff` files.
+
+---
+
+### 4. How do I install a dictionary?
+
+1. Download the dictionary's `.dic` and `.aff` files.
+2. Open **Settings → Offline Spell Checker → Manage Dictionaries**.
+3. Click **Open Folder**.
+4. Paste the files into the opened folder.
+5. Click **Reload Files**.
+
+The dictionary will be loaded automatically and ready to use.
+
+---
+
 ### The Problem
 
 I love taking notes in Obsidian, but finding a good way to check spelling was incredibly frustrating. Existing plugins like [LanguageTool Plugin by clemens e](https://github.com/clemens-e/obsidian-languagetool-plugin), [Harper](https://github.com/automattic/harper-obsidian-plugin), or [LanguageTool Integration by wrenger](https://github.com/wrenger/obsidian-languagetool) are amazingly powerful, but they are also very heavy and consume a lot of computational resources. They often feel like absolute overkill when all you want is a simple, seamless way to quickly catch and correct typos while you type.
