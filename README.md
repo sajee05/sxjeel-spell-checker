@@ -1,6 +1,7 @@
 # Offline Spell Checker for Obsidian
 
 ![Example Preview](https://raw.githubusercontent.com/sajee05/sxjeel-spell-checker/main/example.png)
+- Add to obsidian: https://community.obsidian.md/plugins/sxjeel-spell-checker
 
 ## FAQ
 
