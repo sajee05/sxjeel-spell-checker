@@ -4,3 +4,92 @@
     text-decoration-style: wavy;
     text-decoration-color: var(--color-red);
 }
+
+/* Guarded Fuzzy Search Modal styling */
+.guarded-fuzzy-item {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px;
+    gap: 3px;
+    border-radius: 4px;
+}
+
+.guarded-fuzzy-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.guarded-fuzzy-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-normal);
+}
+
+.guarded-fuzzy-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-title {
+    background-color: var(--color-blue);
+    color: var(--text-on-accent);
+}
+
+.badge-dict, .badge-dictionary {
+    background-color: var(--color-green);
+    color: var(--text-on-accent);
+}
+
+.badge-personal {
+    background-color: var(--color-purple);
+    color: var(--text-on-accent);
+}
+
+.guarded-fuzzy-bottom-row {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Dictionary Manager Setting Tab */
+.dict-manager-card {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: var(--background-secondary);
+}
+
+.dict-download-status {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-accent);
+    font-weight: 500;
+}
+
+.installed-dict-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.installed-dict-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.installed-dict-name {
+    font-weight: 600;
+    color: var(--text-normal);
+}
+
+.installed-dict-files {
+    font-size: 11px;
+    color: var(--text-muted);
+}

@@ -1,3 +1,6 @@
 node_modules/
 dicts/
 main.js
+data.json
+*.sync-conflict-*
+README.txt

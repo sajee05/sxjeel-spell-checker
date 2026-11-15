@@ -1,30 +1,44 @@
-# Offline Spell Checker for Obsidian
+# Offline Spell Checker for Obsidian (sxjeel & Shigeඞ)
 
-![Example Preview](https://raw.githubusercontent.com/sajee05/sxjeel-spell-checker/main/example.png)
+A totally offline, high-speed spell checker for Obsidian with **built-in dictionary library downloads** and a **guarded fuzzy matching engine**.
 
-### The Problem
+---
 
-I love taking notes in Obsidian, but finding a good way to check spelling was incredibly frustrating. Existing plugins like [LanguageTool Plugin by clemens e](https://github.com/clemens-e/obsidian-languagetool-plugin), [Harper](https://github.com/automattic/harper-obsidian-plugin), or [LanguageTool Integration by wrenger](https://github.com/wrenger/obsidian-languagetool) are amazingly powerful, but they are also very heavy and consume a lot of computational resources. They often feel like absolute overkill when all you want is a simple, seamless way to quickly catch and correct typos while you type.
+## Key Features
 
-I just wanted a seamless auto spell checker that was completely offline, lightning fast, and would not drain my battery or slow down my vault with unnecessary bloat. Since I could find no tool that fit my needs perfectly, I built it myself.
+### 1. Built-in Dictionary Downloader
+No need to hunt for external files or copy `.aff` and `.dic` files manually:
+- **One-Click Default Download**: Instantly download and install the official UTF-8 English (US) dictionary right inside Obsidian settings.
+- **Over 45+ International Languages**: Built-in support for English (US, UK, Canada, Australia), Hindi (India), Spanish, French, German, Italian, Portuguese, Russian, and dozens more.
+- **Installed Dictionaries Manager**: View active files, file sizes, and delete dictionaries with one click.
+- **Personal Dictionary (`personal.txt`)**: Add custom UPSC words, names, and acronyms with duplicate protection.
 
-### The Solution
+### 2. Guarded Fuzzy Matching Engine
+Fuzzy, but guarded. Fixes poor native suggestions and provides robust candidate matching:
+1. **Tokenised Query**: Word order doesn't matter, and every query word must match (`ai writing` and `writing ai` return the same list).
+2. **Typo Budget by Word Length (Damerau-Levenshtein)**:
+   - 1–4 letters: exact or prefix only (0 typos)
+   - 5 letters: 1 typo against title words (e.g. `Gitub` finds `GitHub`)
+   - 6–9 letters: 1 typo
+   - 10+ letters: 2 typos (e.g. `troubelshoot` finds `Obsidian Troubleshooting` via transposition)
+3. **Prefix Matches Count**: `constit` finds `Constitution`.
+4. **Reject Scattered-Subsequence Matches**: `writing` will **never** match `Airbyte Checkpointing`.
+5. **No Cross-Word Letter Borrowing**: `invoice` will **never** match `Brand Voice` in normal mode.
+6. **Dropped Space Support**: `polityrevision` finds `Polity Revision`, and `database` finds `Data Base Design`.
+7. **Sensitivity Setting**:
+   - `Off`: Strict exact and prefix matches only (0 typos).
+   - `Normal` (Default): Guarded rules with full boundary protection.
+   - `Loose`: Typo budget raised by 1, and rule 5 boundary protection relaxed.
 
-This plugin is built to be the exact opposite of those heavy grammar tools. It is a totally offline, deeply optimized spell checker that relies on standard open source dictionary files.
+### 3. Guarded Fuzzy Search & Lookup Command
+- Press `Ctrl/Cmd + P` -> `Spell Checker: Guarded Fuzzy Search (Notes, Dictionary & Vocabulary)`
+- Search any title, note, or dictionary term using the 7-rule guarded fuzzy matcher.
+- Press Enter to jump to the note or insert into the active document.
 
-Here is what makes it different:
+---
 
-* **Zero Lag:** It is wired directly into the modern Obsidian text engine so it only checks the words currently visible on your screen. If you have a massive ten thousand word document open, the plugin completely ignores the text you are not actively looking at. This keeps your system resources completely free.
-* **Totally Offline:** Everything runs locally on your machine. No external APIs, no accounts, no server pings, and complete privacy.
-* **Seamless Corrections:** Just right click any word with a red squiggly line to instantly see the top five correct suggestions, and click to replace it.
-* **Personalized Vocabularies:** You can easily drop in standard dictionary files for English, or even build your own highly specific databases for things like UPSC preparation. Just click "Add to personal dictionary" on any custom word, and it will never be flagged again.
+## Commands
+- `Spell Checker: Guarded Fuzzy Search (Notes, Dictionary & Vocabulary)`
+- `Spell Checker: Toggle Spell Checker On/Off`
+- `Spell Checker: Download Default English (US) Library`
 
-### How to Use It
-
-1. Enable the plugin in your Community Plugins settings.
-2. Go to the Offline Spell Checker settings tab and click the **Open Folder** button.
-3. Drop your preferred dictionary files (like English US or British English) into that folder. You need both the `.dic` and `.aff` files, which you can download for free from standard open source repositories.
-4. Click **Reload Files** in the settings.
-5. Start typing!
-
-Enjoy a fast, private, and lightweight writing experience.
