@@ -1,12 +1,12 @@
-import { 
-    App, 
-    Notice, 
-    Plugin, 
-    PluginSettingTab, 
-    Setting, 
-    MarkdownView, 
-    Menu, 
-    Editor, 
+import {
+    App,
+    Notice,
+    Plugin,
+    PluginSettingTab,
+    Setting,
+    MarkdownView,
+    Menu,
+    Editor,
     FileSystemAdapter,
     Modal
 } from 'obsidian';
@@ -15,56 +15,56 @@ import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@
 // @ts-ignore
 import nspell from 'nspell';
 
-import { 
-    FuzzyMode, 
-    guardedFuzzyMatch, 
+import {
+    FuzzyMode,
+    guardedFuzzyMatch,
     getTypoBudget,
     damerauLevenshtein,
     findGuardedFuzzyMatches,
     getCompoundAndPrefixSuggestions,
     COMMON_PREFIXES
 } from './fuzzy';
-import type { 
-    CandidateItem 
+import type {
+    CandidateItem
 } from './fuzzy';
-import { 
-    DICTIONARY_CATALOG, 
-    DEFAULT_DICTIONARY_CODE, 
-    getDictionaryByCode, 
-    getDictionaryByFileName 
+import {
+    DICTIONARY_CATALOG,
+    DEFAULT_DICTIONARY_CODE,
+    getDictionaryByCode,
+    getDictionaryByFileName
 } from './languages';
-import type { 
-    DictionaryInfo 
+import type {
+    DictionaryInfo
 } from './languages';
-import { 
-    downloadDictionary, 
-    getInstalledDictionaries, 
-    deleteDictionary 
+import {
+    downloadDictionary,
+    getInstalledDictionaries,
+    deleteDictionary
 } from './downloader';
-import type { 
-    InstalledDictionary 
+import type {
+    InstalledDictionary
 } from './downloader';
 import { GuardedFuzzySearchModal } from './search-modal';
 
-export type { 
-    FuzzyMode, 
-    CandidateItem, 
-    DictionaryInfo, 
-    InstalledDictionary 
+export type {
+    FuzzyMode,
+    CandidateItem,
+    DictionaryInfo,
+    InstalledDictionary
 };
-export { 
-    guardedFuzzyMatch, 
-    getTypoBudget, 
-    damerauLevenshtein, 
-    findGuardedFuzzyMatches, 
-    DICTIONARY_CATALOG, 
-    DEFAULT_DICTIONARY_CODE, 
-    getDictionaryByCode, 
-    getDictionaryByFileName, 
-    downloadDictionary, 
-    getInstalledDictionaries, 
-    deleteDictionary, 
-    GuardedFuzzySearchModal 
+export {
+    guardedFuzzyMatch,
+    getTypoBudget,
+    damerauLevenshtein,
+    findGuardedFuzzyMatches,
+    DICTIONARY_CATALOG,
+    DEFAULT_DICTIONARY_CODE,
+    getDictionaryByCode,
+    getDictionaryByFileName,
+    downloadDictionary,
+    getInstalledDictionaries,
+    deleteDictionary,
+    GuardedFuzzySearchModal
 };
 
 export interface SpellCheckerSettings {
@@ -543,20 +543,20 @@ class SpellCheckerSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Offline Spell Checker (sxjeel & Shigeඞ)' });
-        containerEl.createEl('p', { 
-            text: 'Fast, offline spell checking with Guarded Fuzzy Matching and built-in dictionary library downloads.' 
-        });
+        containerEl.addClass('sxjeel-settings');
+        const hero = containerEl.createDiv({ cls: 'sxjeel-hero' });
+        hero.createDiv({ cls: 'sxjeel-hero-title', text: 'Offline Spell Checker' });
+        hero.createDiv({ cls: 'sxjeel-hero-sub', text: 'Fast, private spell checking with guarded fuzzy matching.' });
 
         // ==========================================
         // SECTION 1: GENERAL CONTROLS
         // ==========================================
-        containerEl.createEl('h3', { text: 'General Settings' });
+        new Setting(containerEl).setName('General').setHeading();
 
         // Zero-lag instant toggle! Does NOT re-read or wipe dictionaries from RAM!
         new Setting(containerEl)
             .setName('Enable Spell Checker')
-            .setDesc('Toggle real-time spell checking in the editor (instant, zero lag).')
+            .setDesc('Underline misspelled words as you type.')
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.isEnabled)
                 .onChange(async (value) => {
@@ -569,11 +569,11 @@ class SpellCheckerSettingTab extends PluginSettingTab {
         // Rule 7: off / normal / loose setting
         new Setting(containerEl)
             .setName('Fuzzy Matching Sensitivity')
-            .setDesc('Guarded typo budget by word length. Normal allows 1 typo (5-9 letters), 2 typos (10+), dropped spaces, and blocks scattered cross-word borrowing. Loose raises budget by 1 and relaxes cross-word checks.')
+            .setDesc('How many typos are tolerated when suggesting words.')
             .addDropdown(dd => dd
-                .addOption('off', 'Off (Exact & Prefix only)')
-                .addOption('normal', 'Normal (Guarded: 1-2 typos, dropped space, rule-5 boundary protection)')
-                .addOption('loose', 'Loose (Typo budget + 1, relaxed boundary)')
+                .addOption('off', 'Off · exact and prefix only')
+                .addOption('normal', 'Normal · guarded')
+                .addOption('loose', 'Loose · one extra typo')
                 .setValue(this.plugin.settings.fuzzyMode)
                 .onChange(async (value: FuzzyMode) => {
                     this.plugin.settings.fuzzyMode = value;
@@ -582,8 +582,8 @@ class SpellCheckerSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Include Vault Note Titles in Suggestions')
-            .setDesc('When right-clicking a misspelled word, also search vault note titles (e.g. "Obsidian Troubleshooting", "GitHub", "Polity Revision").')
+            .setName('Suggest note titles')
+            .setDesc('Include vault note titles in right-click suggestions.')
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.includeNotesInSuggestions)
                 .onChange(async (value) => {
@@ -592,8 +592,8 @@ class SpellCheckerSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Accept Prefix Compounds as Valid')
-            .setDesc('Recognize common English prefixes attached to valid base words (e.g. "overreliance", "subsystem", "nonstop", "multimodal") as correct without underlining.')
+            .setName('Accept prefix compounds')
+            .setDesc('Treat words like "subsystem" or "multimodal" as correct.')
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.acceptPrefixCompounds)
                 .onChange(async (value) => {
@@ -605,33 +605,26 @@ class SpellCheckerSettingTab extends PluginSettingTab {
         // ==========================================
         // SECTION 2: FEATURED & DEFAULT LIBRARIES
         // ==========================================
-        containerEl.createEl('h3', { text: 'Dictionary Downloader (Built-in Libraries)' });
-        containerEl.createEl('p', {
-            text: 'Download default, regional, medical, and international dictionaries directly from within Obsidian. You do NOT need to leave the app or download external files manually.'
-        });
+        new Setting(containerEl).setName('Dictionaries').setHeading();
 
         // Featured Library Cards
         const featuredCard = containerEl.createDiv({ cls: 'dict-manager-card' });
-        featuredCard.createEl('strong', { text: '⭐ Featured Library Downloads (1-Click Install)' });
-        featuredCard.createEl('p', { 
-            text: 'Click any library below to download and activate immediately:' 
-        });
+        featuredCard.createDiv({ cls: 'dict-card-title', text: 'Quick install' });
+        featuredCard.createDiv({ cls: 'dict-card-sub', text: 'One click to download and activate.' });
 
-        const featuredButtonsContainer = featuredCard.createDiv({ 
-            attr: { style: 'display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;' } 
-        });
+        const featuredButtonsContainer = featuredCard.createDiv({ cls: 'dict-featured-buttons' });
 
         const quickStatus = featuredCard.createDiv({ cls: 'dict-download-status' });
 
         const featuredLibraries = [
-            { code: 'en-US', label: '📥 English (US)' },
-            { code: 'en-IN', label: '📥 English (India)' },
-            { code: 'en-med', label: '📥 English (Medical - 90k Terms)' },
-            { code: 'hi-IN', label: '📥 Hindi (India)' }
+            { code: 'en-US', label: 'English (US)' },
+            { code: 'en-IN', label: 'English (India)' },
+            { code: 'en-med', label: 'English (Medical)' },
+            { code: 'hi-IN', label: 'Hindi (India)' }
         ];
 
         for (const feat of featuredLibraries) {
-            const btn = featuredButtonsContainer.createEl('button', { 
+            const btn = featuredButtonsContainer.createEl('button', {
                 text: feat.label,
                 cls: feat.code === 'en-US' ? 'mod-cta' : ''
             });
@@ -642,20 +635,20 @@ class SpellCheckerSettingTab extends PluginSettingTab {
                 const dict = getDictionaryByCode(feat.code);
                 if (dict) {
                     const res = await downloadDictionary(
-                        this.app, 
-                        this.plugin.manifest.dir || '', 
-                        dict, 
+                        this.app,
+                        this.plugin.manifest.dir || '',
+                        dict,
                         (msg) => quickStatus.setText(msg)
                     );
                     if (res.success) {
                         await this.plugin.loadAllDictionaries();
                         (this.app.workspace as any).updateOptions?.();
-                        quickStatus.setText(`✅ ${res.message}`);
-                        new Notice(`✅ ${res.message}`);
+                        quickStatus.setText(res.message);
+                        new Notice(res.message);
                         this.display();
                     } else {
-                        quickStatus.setText(`❌ ${res.message}`);
-                        new Notice(`❌ ${res.message}`);
+                        quickStatus.setText(res.message);
+                        new Notice(res.message);
                     }
                 }
                 btn.disabled = false;
@@ -664,12 +657,12 @@ class SpellCheckerSettingTab extends PluginSettingTab {
 
         // Selectable Catalog Downloader (all 45+ international languages)
         const downloadSetting = new Setting(containerEl)
-            .setName('Download Additional Language')
-            .setDesc('Select any international language from the catalog and click Download.');
+            .setName('More languages')
+            .setDesc('Choose from 45+ dictionaries.');
 
         downloadSetting.addDropdown(dd => {
             DICTIONARY_CATALOG.forEach(dict => {
-                const label = dict.isPopular ? `⭐ ${dict.name}` : dict.name;
+                const label = dict.name;
                 dd.addOption(dict.code, label);
             });
             dd.setValue(this.plugin.settings.selectedCatalogCode);
@@ -682,7 +675,7 @@ class SpellCheckerSettingTab extends PluginSettingTab {
         this.statusEl = containerEl.createDiv({ cls: 'dict-download-status' });
 
         downloadSetting.addButton(btn => btn
-            .setButtonText('📥 Download Language')
+            .setButtonText('Download')
             .setCta()
             .onClick(async () => {
                 const code = this.plugin.settings.selectedCatalogCode;
@@ -704,12 +697,12 @@ class SpellCheckerSettingTab extends PluginSettingTab {
                 if (result.success) {
                     await this.plugin.loadAllDictionaries();
                     (this.app.workspace as any).updateOptions?.();
-                    if (this.statusEl) this.statusEl.setText(`✅ ${result.message}`);
-                    new Notice(`✅ ${result.message}`);
+                    if (this.statusEl) this.statusEl.setText(result.message);
+                    new Notice(result.message);
                     this.display();
                 } else {
-                    if (this.statusEl) this.statusEl.setText(`❌ ${result.message}`);
-                    new Notice(`❌ ${result.message}`);
+                    if (this.statusEl) this.statusEl.setText(result.message);
+                    new Notice(result.message);
                 }
                 btn.setDisabled(false);
             }));
@@ -717,30 +710,30 @@ class SpellCheckerSettingTab extends PluginSettingTab {
         // ==========================================
         // SECTION 3: INSTALLED DICTIONARIES
         // ==========================================
-        containerEl.createEl('h3', { text: 'Installed Dictionaries' });
+        new Setting(containerEl).setName('Installed').setHeading();
 
         const installed = await getInstalledDictionaries(this.app, this.plugin.manifest.dir || '');
 
         if (installed.length === 0) {
-            containerEl.createEl('p', { 
-                text: 'No dictionaries installed yet. Click any of the Featured Library Download buttons above to install!' 
+            containerEl.createEl('p', {
+                text: 'No dictionaries installed yet.', cls: 'dict-empty'
             });
         } else {
             const listContainer = containerEl.createDiv({ cls: 'dict-manager-card' });
 
             for (const dict of installed) {
                 const row = listContainer.createDiv({ cls: 'installed-dict-row' });
-                
+
                 const info = row.createDiv({ cls: 'installed-dict-info' });
                 info.createSpan({ cls: 'installed-dict-name', text: dict.name });
                 const sizeKb = Math.round((dict.affSize + dict.dicSize) / 1024);
-                info.createSpan({ 
-                    cls: 'installed-dict-files', 
-                    text: `${dict.baseName}.aff + ${dict.baseName}.dic (${sizeKb} KB)` 
+                info.createSpan({
+                    cls: 'installed-dict-files',
+                    text: `${dict.baseName}.aff + ${dict.baseName}.dic (${sizeKb} KB)`
                 });
 
-                const deleteBtn = row.createEl('button', { 
-                    text: '🗑️ Delete',
+                const deleteBtn = row.createEl('button', {
+                    text: 'Delete',
                     cls: 'mod-warning'
                 });
 
@@ -756,26 +749,23 @@ class SpellCheckerSettingTab extends PluginSettingTab {
             }
         }
 
-        const currentlyLoadedStr = this.plugin.loadedDictNames.length > 0 
-            ? `Active in memory: ${this.plugin.loadedDictNames.join(', ')} (${this.plugin.masterVocabulary.length.toLocaleString()} words indexed)`
-            : 'No dictionaries currently loaded in memory.';
-        containerEl.createEl('small', { text: currentlyLoadedStr });
+        const currentlyLoadedStr = this.plugin.loadedDictNames.length > 0
+            ? `Active: ${this.plugin.loadedDictNames.join(', ')} · ${this.plugin.masterVocabulary.length.toLocaleString()} words`
+            : 'No dictionaries loaded.';
+        containerEl.createDiv({ cls: 'dict-footnote', text: currentlyLoadedStr });
 
         // ==========================================
         // SECTION 4: PERSONAL DICTIONARY
         // ==========================================
-        containerEl.createEl('h3', { text: 'Personal Dictionary' });
-        containerEl.createEl('p', { 
-            text: `Words you have added to your personal dictionary: ${this.plugin.personalWords.length} custom word(s).` 
-        });
+        new Setting(containerEl).setName('Personal dictionary').setHeading();
 
         const addWordSetting = new Setting(containerEl)
-            .setName('Add Custom Word')
-            .setDesc('Add a specialized word, UPSC term, acronym, or name so it will never be flagged.');
+            .setName('Add word')
+            .setDesc(`${this.plugin.personalWords.length} custom word(s). Names, acronyms and terms that should never be flagged.`);
 
         let newWordInput = '';
         addWordSetting.addText(text => text
-            .setPlaceholder('Enter word...')
+            .setPlaceholder('Word')
             .onChange(val => { newWordInput = val; }));
 
         addWordSetting.addButton(btn => btn
@@ -791,10 +781,10 @@ class SpellCheckerSettingTab extends PluginSettingTab {
 
         if (this.plugin.personalWords.length > 0) {
             new Setting(containerEl)
-                .setName('Manage Personal Words')
+                .setName('Manage words')
                 .setDesc('View or remove custom words.')
                 .addButton(btn => btn
-                    .setButtonText('View / Manage Words')
+                    .setButtonText('Manage')
                     .onClick(() => {
                         new PersonalWordsModal(this.app, this.plugin, () => this.display()).open();
                     }));
@@ -803,13 +793,13 @@ class SpellCheckerSettingTab extends PluginSettingTab {
         // ==========================================
         // SECTION 5: UTILITIES
         // ==========================================
-        containerEl.createEl('h3', { text: 'Utilities' });
+        new Setting(containerEl).setName('Utilities').setHeading();
 
         new Setting(containerEl)
-            .setName('Folder & Reload Actions')
-            .setDesc('Open local dictionaries directory or force-reload all files.')
+            .setName('Dictionary files')
+            .setDesc('Open the dictionaries folder or reload them.')
             .addButton(btn => btn
-                .setButtonText('📂 Open Folder')
+                .setButtonText('Open folder')
                 .onClick(async () => {
                     const adapter = this.plugin.app.vault.adapter;
                     if (adapter instanceof FileSystemAdapter) {
@@ -823,7 +813,7 @@ class SpellCheckerSettingTab extends PluginSettingTab {
                     }
                 }))
             .addButton(btn => btn
-                .setButtonText('🔄 Reload Files')
+                .setButtonText('Reload')
                 .setCta()
                 .onClick(async () => {
                     await this.plugin.loadAllDictionaries();
@@ -858,19 +848,19 @@ class PersonalWordsModal extends Modal {
             return;
         }
 
-        const listContainer = contentEl.createDiv({ 
+        const listContainer = contentEl.createDiv({
             cls: 'personal-words-list',
             attr: { style: 'max-height: 350px; overflow-y: auto; margin-bottom: 15px;' }
         });
 
         for (const word of this.plugin.personalWords) {
-            const row = listContainer.createDiv({ 
+            const row = listContainer.createDiv({
                 cls: 'installed-dict-row',
                 attr: { style: 'padding: 4px 8px;' }
             });
             row.createSpan({ text: word, attr: { style: 'font-weight: 500;' } });
 
-            const deleteBtn = row.createEl('button', { 
+            const deleteBtn = row.createEl('button', {
                 text: 'Remove',
                 cls: 'mod-warning',
                 attr: { style: 'padding: 2px 8px; font-size: 11px;' }

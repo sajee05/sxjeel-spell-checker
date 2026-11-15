@@ -1,17 +1,125 @@
-/* Styling for misspelled words */
+/* Offline Spell Checker — minimal, Obsidian-native with an Apple feel */
+
+/* Misspelled words */
 .sxjeel-misspelled {
     text-decoration-line: underline;
     text-decoration-style: wavy;
     text-decoration-color: var(--color-red);
+    text-underline-offset: 2px;
 }
 
-/* Guarded Fuzzy Search Modal styling */
+/* ---------- Settings ---------- */
+.sxjeel-settings .setting-item-heading {
+    border: none;
+    padding: 28px 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+}
+
+.sxjeel-hero {
+    padding: 4px 0 8px;
+}
+
+.sxjeel-hero-title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-normal);
+}
+
+.sxjeel-hero-sub {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Cards */
+.dict-manager-card {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    background-color: var(--background-secondary);
+}
+
+.dict-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-normal);
+}
+
+.dict-card-sub {
+    margin: 2px 0 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.dict-featured-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.dict-featured-buttons button,
+.installed-dict-row button {
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 12px;
+    box-shadow: none;
+}
+
+.dict-download-status {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-accent);
+    font-weight: 500;
+}
+
+.dict-empty,
+.dict-footnote {
+    font-size: 12px;
+    color: var(--text-faint);
+    margin: 6px 0 0;
+}
+
+/* Installed list (grouped, inset) */
+.installed-dict-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.installed-dict-row:last-child {
+    border-bottom: none;
+}
+
+.installed-dict-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.installed-dict-name {
+    font-weight: 600;
+    color: var(--text-normal);
+}
+
+.installed-dict-files {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ---------- Guarded fuzzy search modal ---------- */
 .guarded-fuzzy-item {
     display: flex;
     flex-direction: column;
-    padding: 6px 10px;
+    padding: 8px 12px;
     gap: 3px;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 .guarded-fuzzy-top-row {
@@ -29,9 +137,10 @@
 
 .guarded-fuzzy-badge {
     font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
@@ -51,45 +160,6 @@
 }
 
 .guarded-fuzzy-bottom-row {
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
-/* Dictionary Manager Setting Tab */
-.dict-manager-card {
-    border: 1px solid var(--background-modifier-border);
-    border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 12px;
-    background-color: var(--background-secondary);
-}
-
-.dict-download-status {
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--text-accent);
-    font-weight: 500;
-}
-
-.installed-dict-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--background-modifier-border);
-}
-
-.installed-dict-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.installed-dict-name {
-    font-weight: 600;
-    color: var(--text-normal);
-}
-
-.installed-dict-files {
     font-size: 11px;
     color: var(--text-muted);
 }
